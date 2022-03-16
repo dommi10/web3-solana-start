@@ -14,7 +14,8 @@ const styles = {
   main: 'px-4 py-6 h-full w-full mx-auto font-bold max-w-md flex justify-center items-center text-white flex-col space-y-4',
   button:
     'w-full h-16 md:min-w-[200px] font-bold md:w-auto md:h-12 p-2 bg-purple-500 text-white rounded',
-  displayText: 'font-bold text-red',
+  displayText: 'text-4xl font-bold text-red-300',
+  displayContainer: 'flex justify-center py-4 items-center',
 };
 
 const { SystemProgram, Keypair } = web3;
@@ -33,7 +34,6 @@ export default function Home() {
   const wallet = useWallet();
 
   async function getProvider() {
-    console.log(process.env.NEXT_PUBLIC_ENDPOINT);
     // create provider and return it to the caller
     //  network set to local network now
     const network = process.env.NEXT_PUBLIC_ENDPOINT;
@@ -110,13 +110,15 @@ export default function Home() {
                 <button className={styles.button} onClick={increment}>
                   Increment counter
                 </button>
-                {value >= Number(0) ? (
-                  <h2 className={styles.displayText}>{value}</h2>
-                ) : (
-                  <h3 className={styles.displayText}>
-                    Please create the counter
-                  </h3>
-                )}
+                <div className={styles.displayContainer}>
+                  {value >= Number(0) ? (
+                    <h2 className={styles.displayText}>{value}</h2>
+                  ) : (
+                    <h3 className={styles.displayText}>
+                      Please create the counter
+                    </h3>
+                  )}
+                </div>
               </div>
             )}
           </div>
