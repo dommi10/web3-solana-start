@@ -10,10 +10,11 @@ import {
 import { PublicKey, Connection } from '@solana/web3.js';
 
 const styles = {
-  container: 'h-screen w-screen',
-  main: 'px-4 py-6 h-full w-full',
+  container: 'h-screen w-screen bg-gray-800',
+  main: 'px-4 py-6 h-full w-full mx-auto font-bold max-w-md flex justify-center items-center text-white flex-col space-y-4',
   button:
-    'w-full h-16 md:w-[200px] md:h-12 p-2 bg-purple-500 text-white rounded',
+    'w-full h-16 md:min-w-[200px] font-bold md:w-auto md:h-12 p-2 bg-purple-500 text-white rounded',
+  displayText: 'font-bold text-red',
 };
 
 const { SystemProgram, Keypair } = web3;
@@ -32,9 +33,10 @@ export default function Home() {
   const wallet = useWallet();
 
   async function getProvider() {
+    console.log(process.env.NEXT_PUBLIC_ENDPOINT);
     // create provider and return it to the caller
-    //  network set to lacol network now
-    const network = 'http://127.0.0.1:8899';
+    //  network set to local network now
+    const network = process.env.NEXT_PUBLIC_ENDPOINT;
     const connection = new Connection(network, opts.preflightCommitment);
 
     const provider = new Provider(connection, wallet, opts.preflightCommitment);
@@ -96,22 +98,28 @@ export default function Home() {
             <WalletMultiButton />
           </div>
         ) : (
-          <button className={styles.button}>
+          <div>
             {!value ? (
               <div>
-                <button onClick={createCounter}>Create counter</button>
+                <button className={styles.button} onClick={createCounter}>
+                  Create counter
+                </button>
               </div>
             ) : (
               <div>
-                <button onClick={increment}>Increment counter</button>
+                <button className={styles.button} onClick={increment}>
+                  Increment counter
+                </button>
                 {value >= Number(0) ? (
-                  <h2>{value}</h2>
+                  <h2 className={styles.displayText}>{value}</h2>
                 ) : (
-                  <h3>Please create the counter</h3>
+                  <h3 className={styles.displayText}>
+                    Please create the counter
+                  </h3>
                 )}
               </div>
             )}
-          </button>
+          </div>
         )}
       </main>
     </div>
