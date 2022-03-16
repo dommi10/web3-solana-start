@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-nabittuto = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+nabittuto = "3SFNFgpmm6JEtKg4B2mmoBSDQYojxogi9jH46m6fKbgf"
 
 [registry]
 url = "https://anchor.projectserum.com"
