@@ -11,12 +11,12 @@ describe('nabittuto', () => {
   const program = anchor.workspace.Nabittuto;
 
   // test if create a counter
-  it('Creates a counter', async () => {
+  it('initialize the account', async () => {
     // call the create func via RPC
     // generate an accounbt
     const baseAccount = anchor.web3.Keypair.generate();
 
-    await program.rpc.create({
+    await program.rpc.initialize('Hello word web3', {
       accounts: {
         baseAccount: baseAccount.publicKey,
         user: provider.wallet.publicKey,
@@ -29,17 +29,17 @@ describe('nabittuto', () => {
     const account = await program.account.baseAccount.fetch(
       baseAccount.publicKey,
     );
-    console.log('Count 0:', account.count.toString());
-    assert.ok(account.count.toString() == 0);
+    console.log('Data:', account.data);
+    assert.ok(account.data === 'Hello word web3');
     _baseAccount = baseAccount;
   });
 
-  /* test if Increment */
-  it('Increments the counter', async () => {
+  /* test if update */
+  it('Updates a previously created account', async () => {
     const baseAccount = _baseAccount;
 
     //  call the function RPC
-    await program.rpc.increment({
+    await program.rpc.update('everything is okay', {
       accounts: {
         baseAccount: baseAccount.publicKey,
       },
@@ -49,7 +49,10 @@ describe('nabittuto', () => {
     const account = await program.account.baseAccount.fetch(
       baseAccount.publicKey,
     );
-    console.log('Count 1: ', account.count.toString());
-    assert.ok(account.count.toString() == 1);
+    console.log('Updated Data: ', account.data);
+    assert.ok(account.data === 'everything is okay');
+    console.log('All account data ', account);
+    console.log('All  data ', account.dataList);
+    assert.ok(account.dataList.length === 2);
   });
 });

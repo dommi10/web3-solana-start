@@ -7,7 +7,7 @@ nabittuto = "3SFNFgpmm6JEtKg4B2mmoBSDQYojxogi9jH46m6fKbgf"
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/home/doms/.config/solana/id.json"
 
 [scripts]

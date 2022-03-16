@@ -15,7 +15,7 @@ const styles = {
   button:
     'w-full h-16 md:min-w-[200px] font-bold md:w-auto md:h-12 p-2 bg-purple-500 text-white rounded',
   displayText: 'text-4xl font-bold text-red-300',
-  displayContainer: 'flex justify-center py-4 items-center',
+  displayContainer: 'flex flex-col justify-center py-4 space-y-4 items-center',
 };
 
 const { SystemProgram, Keypair } = web3;
@@ -31,6 +31,8 @@ const programID = new PublicKey(idl.metadata.address);
 
 export default function Home() {
   const [value, setValue] = useState(null);
+  const [dataList, setDataList] = useState([]);
+  const [input, setInput] = useState('');
   const wallet = useWallet();
 
   async function getProvider() {
@@ -43,13 +45,13 @@ export default function Home() {
     return provider;
   }
 
-  async function createCounter() {
+  async function initialize() {
     const provider = await getProvider();
 
     //  create the program interface combining the idl, program ID, and provider
     const program = new Program(idl, programID, provider);
     try {
-      await program.rpc.create({
+      await program.rpc.initialize('Hellow web3', {
         accounts: {
           baseAccount: baseAccount.publicKey,
           user: provider.wallet.publicKey,
@@ -61,27 +63,34 @@ export default function Home() {
       const account = await program.account.baseAccount.fetch(
         baseAccount.publicKey,
       );
-      console.log('account: ', account);
-      setValue(account.count.toString());
+      setValue(account.data.toString());
+      setDataList(account.dataList);
+      setInput('');
     } catch (error) {
       console.log('Transaction error: ', error);
     }
   }
 
-  async function increment() {
-    const provider = await getProvider();
-    const program = new Program(idl, programID, provider);
-    await program.rpc.increment({
-      accounts: {
-        baseAccount: baseAccount.publicKey,
-      },
-    });
+  async function update() {
+    try {
+      if (!input) return;
+      const provider = await getProvider();
+      const program = new Program(idl, programID, provider);
+      await program.rpc.update(input, {
+        accounts: {
+          baseAccount: baseAccount.publicKey,
+        },
+      });
 
-    const account = await program.account.baseAccount.fetch(
-      baseAccount.publicKey,
-    );
-    console.log('account: ', account);
-    setValue(account.count.toString());
+      const account = await program.account.baseAccount.fetch(
+        baseAccount.publicKey,
+      );
+      setValue(account.data.toString());
+      setDataList(account.dataList);
+      setInput('');
+    } catch (err) {
+      console.log('Transaction error: ', err);
+    }
   }
 
   return (
@@ -100,24 +109,29 @@ export default function Home() {
         ) : (
           <div>
             {!value ? (
-              <div>
-                <button className={styles.button} onClick={createCounter}>
-                  Create counter
+              <div className={styles.displayContainer}>
+                <h2 className={styles.displayText}>Please initialize</h2>
+                <button className={styles.button} onClick={initialize}>
+                  initialize
                 </button>
               </div>
             ) : (
               <div>
-                <button className={styles.button} onClick={increment}>
-                  Increment counter
+                <button className={styles.button} onClick={update}>
+                  update
                 </button>
+
                 <div className={styles.displayContainer}>
-                  {value >= Number(0) ? (
-                    <h2 className={styles.displayText}>{value}</h2>
-                  ) : (
-                    <h3 className={styles.displayText}>
-                      Please create the counter
-                    </h3>
-                  )}
+                  <input
+                    placeholder='Add new data'
+                    onChange={(e) => setInput(e.target.value)}
+                    value={input}
+                  />
+                  {dataList.map((item, index) => (
+                    <h2 key={index} className={styles.displayText}>
+                      {item}
+                    </h2>
+                  ))}
                 </div>
               </div>
             )}

@@ -1,13 +1,16 @@
 import '../styles/globals.css';
 import { ConnectionProvider } from '@solana/wallet-adapter-react';
 import dynamic from 'next/dynamic';
+import { clusterApiUrl } from '@solana/web3.js';
 const WalletProvider = dynamic(() => import('../context/clientWallet'), {
   ssr: false,
 });
 
 function MyApp({ Component, pageProps }) {
+  const network = clusterApiUrl('devnet');
+
   return (
-    <ConnectionProvider endpoint='http://127.0.0.1:8899'>
+    <ConnectionProvider endpoint={network}>
       <WalletProvider>
         <Component {...pageProps} />
       </WalletProvider>
